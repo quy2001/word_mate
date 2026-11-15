@@ -1,0 +1,132 @@
+{
+  "@@locale": "en",
+
+  "registerSubtitle": "Your English vocab companion ✨",
+  "chooseAvatar": "Choose your avatar",
+  "whatShouldWeCallYou": "What should we call you?",
+  "nicknameHint": "Your nickname...",
+  "saving": "Saving...",
+  "letsGo": "Let's go",
+
+  "setDailyGoal": "Set your daily goal 🎯",
+  "howManyWords": "How many words will you learn each day?",
+  "starting": "Starting...",
+  "startLearning": "Start Learning",
+  "wordsPerDay": "words per day",
+  "wordsPerMonth": "📅 That's ~{count} words a month!",
+  "@wordsPerMonth": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "goodMorning": "Good morning",
+  "goodAfternoon": "Good afternoon",
+  "goodEvening": "Good evening",
+  "todaysGoal": "Today's Goal",
+  "goalCrushed": "You've crushed your goal! 🎉",
+  "almostThere": "Almost there! {remaining} more\nwords to reach your daily\npeak.",
+  "@almostThere": {
+    "placeholders": {
+      "remaining": { "type": "int" }
+    }
+  },
+  "dayStreak": "DAY STREAK",
+  "wordsSaved": "WORDS SAVED",
+  "dueForReview": "Due for Review",
+  "wordsPending": "{count} words pending",
+  "@wordsPending": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noWordsDue": "No words due! 🎉",
+  "startReview": "Start Review",
+  "popularTopics": "Popular Topics",
+
+  "searchTopics": "Search topics...",
+  "failedToLoadTopics": "Failed to load topics",
+  "deleteTopic": "Delete Topic",
+  "deleteTopicConfirm": "Are you sure you want to delete \"{topicName}\"? The words in this topic will not be deleted.",
+  "@deleteTopicConfirm": {
+    "placeholders": {
+      "topicName": { "type": "String" }
+    }
+  },
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "newTopic": "New Topic",
+  "topicName": "Topic Name",
+  "topicNameHint": "e.g., Academic, Travel...",
+  "chooseThemeColor": "Choose a theme color",
+  "createTopic": "Create Topic",
+
+  "wordsCount": "{count} words",
+  "@wordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "searchWord": "Search word...",
+  "failedToLoadVocab": "Failed to load vocabulary list.",
+  "noWordsFound": "No words found.",
+  "cannotPlayAudio": "Cannot play audio! 🔊",
+  "noAudioData": "This word has no audio data! 🔊",
+
+  "timeSeconds": "{count} seconds",
+  "@timeSeconds": { "placeholders": { "count": { "type": "int" } } },
+  "timeMinutes": "{count} minutes",
+  "@timeMinutes": { "placeholders": { "count": { "type": "int" } } },
+  "timeHours": "{count} hours",
+  "@timeHours": { "placeholders": { "count": { "type": "int" } } },
+  "timeDays": "{count} days",
+  "@timeDays": { "placeholders": { "count": { "type": "int" } } },
+  "timeMonths": "{count} months",
+  "@timeMonths": { "placeholders": { "count": { "type": "int" } } },
+  "timeYears": "{count} years",
+  "@timeYears": { "placeholders": { "count": { "type": "int" } } },
+
+  "learning": "Learning",
+  "mastered": "Mastered",
+  "completed": "You have completed!",
+  "goBack": "Go Back",
+  "failedToLoadCards": "Failed to load cards.",
+
+  "newWord": "New Word ✨",
+  "enterWord": "Enter word...",
+  "meaningHint": "Vietnamese meaning...",
+  "wordAdded": "Word added successfully! ✨",
+  "failedToAddWord": "Failed to add word. Please try again.",
+  "wordType": "Word Type",
+  "topics": "Topics",
+  "topicNameHint2": "Topic name...",
+  "add": "Add",
+  "newLabel": "New",
+  "addToWordy": "Add to WORDY ✨",
+  "addTopic": "Add Topic",
+
+  "settings": "Settings",
+  "language": "Language",
+  "english": "English",
+  "vietnamese": "Tiếng Việt",
+  "appLanguage": "App Language",
+  "chooseLanguage": "Choose your preferred language",
+  "statsScreen": "Stats Screen",
+  "home": "Home",
+  "navStats": "Stats",
+
+  "wordDetail": "Word Detail",
+  "example": "EXAMPLE",
+  "reviewStreak": "REVIEW STREAK",
+  "memoryLevel": "MEMORY LEVEL",
+  "nextInDays": "Next: in {days} days",
+  "@nextInDays": { "placeholders": { "days": { "type": "int" } } },
+  "nextToday": "Next: Today",
+  "nextTomorrow": "Next: Tomorrow",
+  "edit": "Edit",
+  "delete": "Delete",
+  "confirmDelete": "Confirm Delete",
+  "deleteWordConfirm": "Are you sure you want to delete this word?",
+  "cancel": "Cancel",
+  "wordDeleted": "Word deleted successfully"
+}
