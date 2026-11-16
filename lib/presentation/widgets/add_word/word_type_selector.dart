@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:word_mate/common/index.dart';
 import 'package:word_mate/l10n/app_localizations.dart';
 import 'package:word_mate/presentation/views/add_word/bloc/add_word_bloc.dart';
 import 'package:word_mate/presentation/views/add_word/bloc/add_word_event.dart';
@@ -36,7 +37,7 @@ class WordTypeSection extends StatelessWidget {
                 final isSelected =
                     state.selectedType?.toLowerCase() == type.toLowerCase();
                 return TypeChip(
-                  label: type,
+                  label: AppUtils.getLocalizedWordType(type, l10n),
                   isSelected: isSelected,
                   onTap: () => context
                       .read<AddWordBloc>()

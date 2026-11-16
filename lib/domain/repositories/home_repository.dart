@@ -4,4 +4,5 @@ abstract class HomeRepository {
   Future<int> getTotalWordsSaved();
   Future<List<Map<String, dynamic>>> getDueForReviewWords();
   Future<List<Map<String, dynamic>>> getTopics();
+  Future<Map<String, dynamic>> getStatistics();
 }

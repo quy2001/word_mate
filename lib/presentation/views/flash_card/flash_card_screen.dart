@@ -13,13 +13,14 @@ import 'widgets/swipeable_card_stack.dart';
 
 class FlashCardScreen extends StatelessWidget {
   final int? topicId;
+  final bool isReviewMode;
 
-  const FlashCardScreen({super.key, this.topicId});
+  const FlashCardScreen({super.key, this.topicId, this.isReviewMode = false});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => injector<FlashCardBloc>()..add(LoadFlashCards(topicId: topicId)),
+      create: (_) => injector<FlashCardBloc>()..add(LoadFlashCards(topicId: topicId, isReviewMode: isReviewMode)),
       child: const _FlashCardView(),
     );
   }

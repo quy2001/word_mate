@@ -94,7 +94,7 @@
 
   "newWord": "New Word ✨",
   "enterWord": "Enter word...",
-  "meaningHint": "Vietnamese meaning...",
+  "meaningHint": "Enter meaning...",
   "wordAdded": "Word added successfully! ✨",
   "failedToAddWord": "Failed to add word. Please try again.",
   "wordType": "Word Type",
@@ -128,5 +128,28 @@
   "confirmDelete": "Confirm Delete",
   "deleteWordConfirm": "Are you sure you want to delete this word?",
   "cancel": "Cancel",
-  "wordDeleted": "Word deleted successfully"
+  "wordDeleted": "Word deleted successfully",
+  "otherTopic": "Other",
+  "profile": "Profile",
+  "wordMateLearner": "Word Mate Learner",
+  "targetWordsPerDay": "Target words/day",
+  "noExample": "No example",
+  "weeklyActivity": "Weekly Activity",
+  "reviewsCount": "{count} reviews",
+  "@reviewsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accuracy": "Accuracy",
+  "dueToday": "Due Today",
+  "daysInARow": "days in a row",
+  "totalVocabulary": "total vocabulary",
+  "retentionSolid": "retention solid",
+  "inProgress": "in progress",
+  "typeNoun": "Noun",
+  "typeVerb": "Verb",
+  "typeAdj": "Adj",
+  "typeAdv": "Adv",
+  "typeOther": "Other"
 }

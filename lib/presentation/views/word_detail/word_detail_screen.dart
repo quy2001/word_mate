@@ -11,6 +11,8 @@ import 'package:word_mate/presentation/widgets/register/gradient_background.dart
 import 'package:word_mate/presentation/widgets/button_widget.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:word_mate/common/index.dart';
+import 'package:word_mate/presentation/views/edit_word/edit_word_bottom_sheet.dart';
 
 class WordDetailScreen extends StatelessWidget {
   final int cardId;
@@ -196,7 +198,7 @@ class _WordDetailViewState extends State<_WordDetailView> {
                                   children: [
                                     Align(
                                       alignment: Alignment.topLeft,
-                                      child: _buildBadge(type.toUpperCase()),
+                                      child: _buildBadge(AppUtils.getLocalizedWordType(type, l10n).toUpperCase()),
                                     ),
                                     SizedBox(height: 16.h),
                                     Text(
@@ -295,7 +297,7 @@ class _WordDetailViewState extends State<_WordDetailView> {
                                             })
                                           else
                                             Text(
-                                              "No example",
+                                              l10n.noExample,
                                               style: TextStyle(color: Colors.white54, fontSize: 14.sp),
                                             ),
                                         ],
@@ -422,8 +424,11 @@ class _WordDetailViewState extends State<_WordDetailView> {
                                     title: l10n.edit,
                                     iconBefore: Icon(Icons.edit, color: const Color(0xFF9D63FF), size: 18.sp),
                                     color: const Color(0xFF9D63FF),
-                                    onPressed: () {
-                                      // TODO: Navigate to Edit screen
+                                    onPressed: () async {
+                                      final result = await showEditWordBottomSheet(context, cardData: card);
+                                      if (result == true && context.mounted) {
+                                        context.read<WordDetailBloc>().add(LoadWordDetailEvent(card['card_id'] as int));
+                                      }
                                     },
                                   ),
                                 ),

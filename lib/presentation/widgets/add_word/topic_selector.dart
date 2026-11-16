@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:word_mate/common/index.dart';
 import 'package:word_mate/l10n/app_localizations.dart';
 import 'package:word_mate/presentation/views/add_word/bloc/add_word_bloc.dart';
 import 'package:word_mate/presentation/views/add_word/bloc/add_word_event.dart';
@@ -35,7 +36,12 @@ class TopicsSection extends StatelessWidget {
               children: [
                 ...state.topics.map((topic) {
                   final topicId = topic['topic_id'] as int;
-                  final name = topic['name'] as String;
+                  final rawName = topic['name'] as String;
+                  final name = AppUtils.getLocalizedTopicName(
+                    topicId: topicId,
+                    rawName: rawName,
+                    l10n: l10n,
+                  );
                   final isSelected = state.selectedTopicId == topicId;
                   return TopicChip(
                     label: name,

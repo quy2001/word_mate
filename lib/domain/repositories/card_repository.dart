@@ -15,4 +15,20 @@ abstract class CardRepository {
   Future<List<Map<String, dynamic>>> getCards({int? topicId, String? searchQuery});
   Future<Map<String, dynamic>?> getCardById(int cardId);
   Future<int> deleteCard(int cardId);
+  Future<int> updateCard({
+    required int cardId,
+    required String word,
+    required String meaning,
+    String? type,
+    int? topicId,
+    String? ipa,
+    String? audioPath,
+    String? example,
+  });
+  Future<List<Map<String, dynamic>>> getDueForReviewCards({int limit = 50});
+  Future<void> reviewCard({
+    required int cardId,
+    required int rating,
+    int durationMs = 0,
+  });
 }

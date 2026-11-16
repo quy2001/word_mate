@@ -4,9 +4,10 @@ abstract class FlashCardEvent extends Equatable {}
 
 class LoadFlashCards extends FlashCardEvent {
   final int? topicId;
-  LoadFlashCards({this.topicId});
+  final bool isReviewMode;
+  LoadFlashCards({this.topicId, this.isReviewMode = false});
   @override
-  List<Object?> get props => [topicId];
+  List<Object?> get props => [topicId, isReviewMode];
 }
 
 class SwipeCardEvent extends FlashCardEvent {

@@ -16,7 +16,12 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
   Future<void> _onLoadFlashCards(LoadFlashCards event, Emitter<FlashCardState> emit) async {
     emit(state.copyWith(status: FlashCardStatus.loading));
     try {
-      final cards = await _cardRepository.getCards(topicId: event.topicId);
+      final List<Map<String, dynamic>> cards;
+      if (event.isReviewMode) {
+        cards = await _cardRepository.getDueForReviewCards();
+      } else {
+        cards = await _cardRepository.getCards(topicId: event.topicId);
+      }
       if (cards.isEmpty) {
         emit(state.copyWith(status: FlashCardStatus.finished, cards: [], swipeHistory: []));
       } else {
@@ -34,6 +39,16 @@ class FlashCardBloc extends Bloc<FlashCardEvent, FlashCardState> {
   }
 
   void _onSwipeCard(SwipeCardEvent event, Emitter<FlashCardState> emit) {
+    if (state.currentIndex < state.cards.length) {
+      final currentCard = state.cards[state.currentIndex];
+      final cardId = currentCard['card_id'] as int?;
+      if (cardId != null) {
+        // SM-2 rating: 4 for Known (Good), 1 for Unknown (Again)
+        final rating = event.isKnown ? 4 : 1;
+        _cardRepository.reviewCard(cardId: cardId, rating: rating);
+      }
+    }
+
     final newHistory = List<bool>.from(state.swipeHistory)..add(event.isKnown);
     if (state.currentIndex >= state.cards.length - 1) {
       emit(state.copyWith(

@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:word_mate/core/data_state.dart';
 import 'package:word_mate/domain/repositories/card_repository.dart';
 import 'topic_words_event.dart';
 import 'topic_words_state.dart';

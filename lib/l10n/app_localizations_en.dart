@@ -196,7 +196,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterWord => 'Enter word...';
 
   @override
-  String get meaningHint => 'Vietnamese meaning...';
+  String get meaningHint => 'Enter meaning...';
 
   @override
   String get wordAdded => 'Word added successfully! ✨';
@@ -286,4 +286,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wordDeleted => 'Word deleted successfully';
+
+  @override
+  String get otherTopic => 'Other';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get wordMateLearner => 'Word Mate Learner';
+
+  @override
+  String get targetWordsPerDay => 'Target words/day';
+
+  @override
+  String get noExample => 'No example';
+
+  @override
+  String get weeklyActivity => 'Weekly Activity';
+
+  @override
+  String reviewsCount(int count) {
+    return '$count reviews';
+  }
+
+  @override
+  String get accuracy => 'Accuracy';
+
+  @override
+  String get dueToday => 'Due Today';
+
+  @override
+  String get daysInARow => 'days in a row';
+
+  @override
+  String get totalVocabulary => 'total vocabulary';
+
+  @override
+  String get retentionSolid => 'retention solid';
+
+  @override
+  String get inProgress => 'in progress';
+
+  @override
+  String get typeNoun => 'Noun';
+
+  @override
+  String get typeVerb => 'Verb';
+
+  @override
+  String get typeAdj => 'Adj';
+
+  @override
+  String get typeAdv => 'Adv';
+
+  @override
+  String get typeOther => 'Other';
 }

@@ -14,13 +14,13 @@ import 'package:word_mate/presentation/widgets/register/gradient_background.dart
 import 'package:word_mate/presentation/views/topics/topics_screen.dart';
 import 'package:word_mate/presentation/views/topics/bloc/topics_bloc.dart';
 import 'package:word_mate/presentation/views/topics/bloc/topics_event.dart';
-import 'package:word_mate/presentation/widgets/bottom_nav/radial_menu.dart';
 import 'package:word_mate/presentation/widgets/bottom_nav/custom_bottom_nav.dart';
 import 'package:word_mate/presentation/widgets/bottom_nav/bottom_nav_bloc.dart';
 import 'package:word_mate/presentation/widgets/bottom_nav/bottom_nav_state.dart';
 import 'package:word_mate/presentation/widgets/shimmer.dart';
 import 'package:word_mate/presentation/views/settings/settings_screen.dart';
-import 'package:word_mate/l10n/app_localizations.dart';
+import 'package:word_mate/presentation/views/flash_card/flash_card_screen.dart';
+import 'package:word_mate/presentation/views/stats/stats_screen.dart';
 import 'package:word_mate/presentation/views/add_word/add_word_bottom_sheet.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -92,8 +92,15 @@ class HomeScreen extends StatelessWidget {
                                     SizedBox(height: 16.h),
                                     DueForReviewCard(
                                       words: state.dueForReviewWords,
-                                      onStartReview: () {
-                                        // TODO: Navigate to Review screen
+                                      onStartReview: () async {
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) => const FlashCardScreen(isReviewMode: true),
+                                          ),
+                                        );
+                                        if (context.mounted) {
+                                          context.read<HomeBloc>().add(LoadHomeDataEvent());
+                                        }
                                       },
                                     ),
                                     SizedBox(height: 120.h),
@@ -106,12 +113,7 @@ class HomeScreen extends StatelessWidget {
                       case 1:
                         return const TopicsView();
                       case 3:
-                        return Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.statsScreen,
-                            style: const TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        );
+                        return const StatsScreen();
                       case 4:
                         return const SettingsScreen();
                       default:

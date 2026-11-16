@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:word_mate/app.dart';
 import 'package:word_mate/core/index.dart';
 import 'package:word_mate/injector.dart';
@@ -22,6 +23,7 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting();
   
   // Configure dependencies
   await configureDependencies();

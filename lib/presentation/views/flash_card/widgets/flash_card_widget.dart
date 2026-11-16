@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:word_mate/common/index.dart';
+import 'package:word_mate/l10n/app_localizations.dart';
 
 class FlashCardWidget extends StatefulWidget {
   final Map<String, dynamic> cardData;
@@ -76,7 +78,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> with SingleTickerProv
                 : Transform(
                     transform: Matrix4.identity()..rotateY(pi),
                     alignment: Alignment.center,
-                    child: _buildBack(),
+                    child: _buildBack(context),
                   ),
           );
         },
@@ -140,7 +142,8 @@ class _FlashCardWidgetState extends State<FlashCardWidget> with SingleTickerProv
     );
   }
 
-  Widget _buildBack() {
+  Widget _buildBack(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final meaning = widget.cardData['meaning'] as String? ?? '';
     final ipa = widget.cardData['ipa'] as String? ?? '';
     final type = widget.cardData['type'] as String? ?? '';
@@ -170,7 +173,7 @@ class _FlashCardWidgetState extends State<FlashCardWidget> with SingleTickerProv
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
-                type.toUpperCase(),
+                AppUtils.getLocalizedWordType(type, l10n).toUpperCase(),
                 style: TextStyle(
                   color: const Color(0xFF9E5DF2),
                   fontSize: 14.sp,

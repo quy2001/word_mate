@@ -20,4 +20,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<List<Map<String, dynamic>>> getTopics() => _dao.getTopics();
+
+  @override
+  Future<Map<String, dynamic>> getStatistics() => _dao.getStatistics();
 }

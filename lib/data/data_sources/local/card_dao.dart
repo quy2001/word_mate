@@ -57,10 +57,11 @@ class CardDao {
       ''');
     }
 
-    // Check if we should include "Khác"
+    // Check if we should include "Khác" / "Other"
     bool includeKhac = true;
     if (searchQuery != null && searchQuery.trim().isNotEmpty) {
-      if (!'khác'.contains(searchQuery.trim().toLowerCase())) {
+      final q = searchQuery.trim().toLowerCase();
+      if (!'khác'.contains(q) && !'other'.contains(q)) {
         includeKhac = false;
       }
     }
@@ -140,5 +141,87 @@ class CardDao {
   Future<int> deleteCard(int cardId) async {
     final db = await _appDatabase.database;
     return db.delete('Cards', where: 'card_id = ?', whereArgs: [cardId]);
+  }
+
+  /// Update an existing card
+  Future<int> updateCard(int cardId, Map<String, dynamic> cardData) async {
+    final db = await _appDatabase.database;
+    return db.update(
+      'Cards',
+      cardData,
+      where: 'card_id = ?',
+      whereArgs: [cardId],
+    );
+  }
+
+  /// Get cards due for review (next_review_ts <= now)
+  Future<List<Map<String, dynamic>>> getDueForReviewCards({int limit = 50}) async {
+    final db = await _appDatabase.database;
+    final nowTs = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    return db.query(
+      'Cards',
+      where: 'next_review_ts <= ? AND is_archived = 0',
+      whereArgs: [nowTs],
+      orderBy: 'next_review_ts ASC',
+      limit: limit,
+    );
+  }
+
+  /// Record SM-2 review progress
+  Future<void> reviewCard({
+    required int cardId,
+    required int rating, // 0 - 5
+    int durationMs = 0,
+  }) async {
+    final db = await _appDatabase.database;
+    final card = await getCardById(cardId);
+    if (card == null) return;
+
+    final nowTs = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    int streak = (card['streak'] as int?) ?? 0;
+    int intervalDays = (card['interval_days'] as int?) ?? 0;
+    double easinessFactor = ((card['easiness_factor'] as num?) ?? 2.5).toDouble();
+
+    // SM-2 Spaced Repetition calculation
+    if (rating >= 3) {
+      if (streak == 0) {
+        intervalDays = 1;
+      } else if (streak == 1) {
+        intervalDays = 6;
+      } else {
+        intervalDays = (intervalDays * easinessFactor).round();
+      }
+      streak += 1;
+    } else {
+      streak = 0;
+      intervalDays = 1;
+    }
+
+    // New EF = EF + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02))
+    easinessFactor = easinessFactor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
+    if (easinessFactor < 1.3) easinessFactor = 1.3;
+
+    final nextReviewTs = nowTs + (intervalDays * 86400);
+
+    await db.transaction((txn) async {
+      await txn.update(
+        'Cards',
+        {
+          'streak': streak,
+          'interval_days': intervalDays,
+          'easiness_factor': easinessFactor,
+          'next_review_ts': nextReviewTs,
+        },
+        where: 'card_id = ?',
+        whereArgs: [cardId],
+      );
+
+      await txn.insert('ReviewHistory', {
+        'card_id': cardId,
+        'review_ts': nowTs,
+        'rating': rating,
+        'duration_ms': durationMs,
+      });
+    });
   }
 }

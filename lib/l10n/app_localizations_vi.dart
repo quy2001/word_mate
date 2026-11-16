@@ -286,4 +286,60 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get wordDeleted => 'Đã xoá từ thành công';
+
+  @override
+  String get otherTopic => 'Khác';
+
+  @override
+  String get profile => 'Hồ sơ';
+
+  @override
+  String get wordMateLearner => 'Học viên Word Mate';
+
+  @override
+  String get targetWordsPerDay => 'Mục tiêu từ/ngày';
+
+  @override
+  String get noExample => 'Không có ví dụ';
+
+  @override
+  String get weeklyActivity => 'Hoạt động hàng tuần';
+
+  @override
+  String reviewsCount(int count) {
+    return '$count lượt ôn';
+  }
+
+  @override
+  String get accuracy => 'Độ chính xác';
+
+  @override
+  String get dueToday => 'Cần ôn hôm nay';
+
+  @override
+  String get daysInARow => 'ngày liên tiếp';
+
+  @override
+  String get totalVocabulary => 'tổng số từ';
+
+  @override
+  String get retentionSolid => 'ghi nhớ vững';
+
+  @override
+  String get inProgress => 'đang rèn luyện';
+
+  @override
+  String get typeNoun => 'Danh từ';
+
+  @override
+  String get typeVerb => 'Động từ';
+
+  @override
+  String get typeAdj => 'Tính từ';
+
+  @override
+  String get typeAdv => 'Trạng từ';
+
+  @override
+  String get typeOther => 'Khác';
 }

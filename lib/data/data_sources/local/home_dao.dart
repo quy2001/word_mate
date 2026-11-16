@@ -91,4 +91,62 @@ class HomeDao {
       }
     ];
   }
+
+  /// Thống kê chi tiết
+  Future<Map<String, dynamic>> getStatistics() async {
+    final db = await _appDatabase.database;
+    final nowTs = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+    final totalResult = await db.rawQuery('SELECT COUNT(*) FROM Cards WHERE is_archived = 0');
+    final totalWords = Sqflite.firstIntValue(totalResult) ?? 0;
+
+    final masteredResult = await db.rawQuery('SELECT COUNT(*) FROM Cards WHERE streak >= 3 AND is_archived = 0');
+    final masteredWords = Sqflite.firstIntValue(masteredResult) ?? 0;
+
+    final learningResult = await db.rawQuery('SELECT COUNT(*) FROM Cards WHERE streak < 3 AND is_archived = 0');
+    final learningWords = Sqflite.firstIntValue(learningResult) ?? 0;
+
+    final dueResult = await db.rawQuery('SELECT COUNT(*) FROM Cards WHERE next_review_ts <= ? AND is_archived = 0', [nowTs]);
+    final dueWords = Sqflite.firstIntValue(dueResult) ?? 0;
+
+    final totalReviewsResult = await db.rawQuery('SELECT COUNT(*) FROM ReviewHistory');
+    final totalReviews = Sqflite.firstIntValue(totalReviewsResult) ?? 0;
+
+    double accuracy = 0.0;
+    if (totalReviews > 0) {
+      final accuracyResult = await db.rawQuery('SELECT AVG(CASE WHEN rating >= 3 THEN 1.0 ELSE 0.0 END) * 100 FROM ReviewHistory');
+      accuracy = (accuracyResult.first.values.first as num?)?.toDouble() ?? 0.0;
+    }
+
+    final now = DateTime.now();
+    final List<Map<String, dynamic>> weeklyActivity = [];
+    for (int i = 6; i >= 0; i--) {
+      final d = now.subtract(Duration(days: i));
+      final start = DateTime(d.year, d.month, d.day).millisecondsSinceEpoch ~/ 1000;
+      final end = start + 86400;
+
+      final countResult = await db.rawQuery(
+        'SELECT COUNT(*) FROM ReviewHistory WHERE review_ts >= ? AND review_ts < ?',
+        [start, end],
+      );
+      final count = Sqflite.firstIntValue(countResult) ?? 0;
+      weeklyActivity.add({
+        'day': d,
+        'count': count,
+      });
+    }
+
+    final dayStreak = await getDayStreak();
+
+    return {
+      'totalWords': totalWords,
+      'masteredWords': masteredWords,
+      'learningWords': learningWords,
+      'dueWords': dueWords,
+      'totalReviews': totalReviews,
+      'accuracy': accuracy,
+      'weeklyActivity': weeklyActivity,
+      'dayStreak': dayStreak,
+    };
+  }
 }

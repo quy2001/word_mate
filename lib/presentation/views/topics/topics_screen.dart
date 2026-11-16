@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:word_mate/common/index.dart';
 import 'package:word_mate/l10n/app_localizations.dart';
-import 'package:word_mate/injector.dart';
 import 'package:word_mate/presentation/views/topics/bloc/topics_bloc.dart';
 import 'package:word_mate/presentation/views/topics/bloc/topics_event.dart';
 import 'package:word_mate/presentation/views/topics/bloc/topics_state.dart';
@@ -131,11 +131,16 @@ class _TopicsViewContentState extends State<_TopicsViewContent> {
                     // Shift indices by 1 for actual topics
                     final topicIndex = index - 1;
                     final topic = state.topics[topicIndex];
-                    final name = topic['name'] as String;
+                    final rawName = topic['name'] as String;
+                    final topicId = topic['topic_id'] as int;
+                    final name = AppUtils.getLocalizedTopicName(
+                      topicId: topicId,
+                      rawName: rawName,
+                      l10n: l10n,
+                    );
                     final wordCount = topic['word_count'] as int? ?? 0;
                     final colorHex = topic['color_hex'] as String? ?? '#9E5DF2';
                     final themeColor = Color(int.parse(colorHex.replaceFirst('#', '0xFF')));
-                    final topicId = topic['topic_id'] as int;
 
                     return WiggleWrapper(
                       animate: _isDeleteMode,

@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:word_mate/common/index.dart';
 import 'package:word_mate/l10n/app_localizations.dart';
 import 'package:word_mate/injector.dart';
 import 'package:word_mate/presentation/views/add_word/add_word_bottom_sheet.dart';
@@ -28,14 +29,19 @@ class TopicWordsScreen extends StatelessWidget {
     return BlocProvider<TopicWordsBloc>(
       create: (context) => injector<TopicWordsBloc>()
         ..add(InitTopicWordsEvent(initialTopicId: initialTopicId)),
-      child: _TopicWordsScreenContent(initialTopicName: initialTopicName),
+      child: _TopicWordsScreenContent(
+        initialTopicId: initialTopicId,
+        initialTopicName: initialTopicName,
+      ),
     );
   }
 }
 
 class _TopicWordsScreenContent extends StatefulWidget {
+  final int? initialTopicId;
   final String? initialTopicName;
   const _TopicWordsScreenContent({
+    this.initialTopicId,
     this.initialTopicName,
   });
 
@@ -93,7 +99,11 @@ class _TopicWordsScreenContentState extends State<_TopicWordsScreenContent> {
                       width: 8.w,
                     ),
                     Text(
-                      '${widget.initialTopicName}',
+                      AppUtils.getLocalizedTopicName(
+                        topicId: widget.initialTopicId,
+                        rawName: widget.initialTopicName,
+                        l10n: l10n,
+                      ),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22.sp,
@@ -372,6 +382,7 @@ class _WordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final word = card['word'] as String? ?? '';
     final meaning = card['meaning'] as String? ?? '';
     final type = card['type'] as String? ?? '';
@@ -421,7 +432,7 @@ class _WordCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Text(
-                            type.toUpperCase(),
+                            AppUtils.getLocalizedWordType(type, l10n).toUpperCase(),
                             style: TextStyle(
                               color: const Color(0xFF9E5DF2),
                               fontSize: 11.sp,

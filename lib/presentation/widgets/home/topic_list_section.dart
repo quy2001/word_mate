@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:word_mate/common/index.dart';
 import 'package:word_mate/l10n/app_localizations.dart';
 import 'package:word_mate/presentation/views/home/bloc/home_bloc.dart';
 import 'package:word_mate/presentation/views/home/bloc/home_event.dart';
@@ -56,10 +57,15 @@ class TopicListSection extends StatelessWidget {
           child: Row(
             children: [
               ...topics.map((topic) {
-                final name = (topic['name'] as String?) ?? 'Topic';
+                final rawName = (topic['name'] as String?) ?? 'Topic';
+                final topicId = topic['topic_id'] as int?;
+                final name = AppUtils.getLocalizedTopicName(
+                  topicId: topicId,
+                  rawName: rawName,
+                  l10n: l10n,
+                );
                 final colorHex = topic['color_hex'] as String?;
                 final chipColor = _parseColor(colorHex);
-                final topicId = topic['topic_id'] as int?;
 
                 return Padding(
                   padding: EdgeInsets.only(right: 10.w),

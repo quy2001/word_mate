@@ -68,4 +68,44 @@ class CardRepositoryImpl implements CardRepository {
   Future<int> deleteCard(int cardId) {
     return _dao.deleteCard(cardId);
   }
+
+  @override
+  Future<int> updateCard({
+    required int cardId,
+    required String word,
+    required String meaning,
+    String? type,
+    int? topicId,
+    String? ipa,
+    String? audioPath,
+    String? example,
+  }) {
+    return _dao.updateCard(cardId, {
+      'word': word,
+      'meaning': meaning,
+      'type': type,
+      'topic_id': topicId,
+      if (ipa != null) 'ipa': ipa,
+      if (audioPath != null) 'audio_path': audioPath,
+      if (example != null) 'example': example,
+    });
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getDueForReviewCards({int limit = 50}) {
+    return _dao.getDueForReviewCards(limit: limit);
+  }
+
+  @override
+  Future<void> reviewCard({
+    required int cardId,
+    required int rating,
+    int durationMs = 0,
+  }) {
+    return _dao.reviewCard(
+      cardId: cardId,
+      rating: rating,
+      durationMs: durationMs,
+    );
+  }
 }

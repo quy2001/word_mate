@@ -2,13 +2,219 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:word_mate/domain/repositories/app_settings_repository.dart';
+import 'package:word_mate/domain/usecases/save_daily_goal_usecase.dart';
+import 'package:word_mate/domain/usecases/save_user_profile_usecase.dart';
+import 'package:word_mate/gen/assets.gen.dart';
+import 'package:word_mate/injector.dart';
 import 'package:word_mate/l10n/app_localizations.dart';
+import 'package:word_mate/presentation/views/home/bloc/home_bloc.dart';
+import 'package:word_mate/presentation/views/home/bloc/home_event.dart';
 import 'package:word_mate/presentation/views/settings/bloc/locale_bloc.dart';
 import 'package:word_mate/presentation/views/settings/bloc/locale_event.dart';
 import 'package:word_mate/presentation/views/settings/bloc/locale_state.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  String _nickname = 'Learner';
+  String _avatarPath = Assets.images.fox.path;
+  int _dailyGoal = 10;
+
+  final List<String> _avatars = [
+    Assets.images.fox.path,
+    Assets.images.moon.path,
+    Assets.images.octopus.path,
+    Assets.images.thunder.path,
+    Assets.images.darts.path,
+    Assets.images.books.path,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final repo = injector<AppSettingsRepository>();
+    final nickname = await repo.getNickname();
+    final avatar = await repo.getAvatar();
+    final goal = await repo.getDailyGoal();
+    if (mounted) {
+      setState(() {
+        _nickname = nickname ?? 'Learner';
+        _avatarPath = avatar ?? Assets.images.fox.path;
+        _dailyGoal = goal ?? 10;
+      });
+    }
+  }
+
+  Future<void> _updateGoal(int newGoal) async {
+    if (newGoal < 1 || newGoal > 100) return;
+    setState(() => _dailyGoal = newGoal);
+    await injector<SaveDailyGoalUseCase>()(SaveDailyGoalParams(goal: newGoal));
+    if (mounted) {
+      try {
+        context.read<HomeBloc>().add(LoadHomeDataEvent());
+      } catch (_) {}
+    }
+  }
+
+  void _showEditProfileBottomSheet() {
+    final l10n = AppLocalizations.of(context)!;
+    final textController = TextEditingController(text: _nickname);
+    String tempAvatar = _avatarPath;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(ctx).viewInsets.bottom,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(24.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1235),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.white.withValues(alpha: 0.1),
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(2.r),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      l10n.chooseAvatar,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Wrap(
+                      spacing: 14.w,
+                      runSpacing: 14.h,
+                      alignment: WrapAlignment.center,
+                      children: _avatars.map((av) {
+                        final isSel = av == tempAvatar;
+                        return GestureDetector(
+                          onTap: () => setModalState(() => tempAvatar = av),
+                          child: Container(
+                            width: 60.w,
+                            height: 60.w,
+                            padding: EdgeInsets.all(8.w),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isSel
+                                  ? const Color(0xFF9D63FF).withValues(alpha: 0.25)
+                                  : Colors.white.withValues(alpha: 0.05),
+                              border: Border.all(
+                                color: isSel
+                                    ? const Color(0xFF9D63FF)
+                                    : Colors.white.withValues(alpha: 0.15),
+                                width: isSel ? 2 : 1,
+                              ),
+                            ),
+                            child: Image.asset(av),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 24.h),
+                    TextField(
+                      controller: textController,
+                      style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                      decoration: InputDecoration(
+                        hintText: l10n.nicknameHint,
+                        hintStyle: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.4),
+                          fontSize: 15.sp,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white.withValues(alpha: 0.06),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                          borderSide: BorderSide(
+                            color: Colors.white.withValues(alpha: 0.15),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    GestureDetector(
+                      onTap: () async {
+                        final newNick = textController.text.trim();
+                        if (newNick.isEmpty) return;
+                        await injector<SaveUserProfileUseCase>()(
+                          SaveUserProfileParams(
+                            nickname: newNick,
+                            avatarPath: tempAvatar,
+                          ),
+                        );
+                        if (mounted) {
+                          setState(() {
+                            _nickname = newNick;
+                            _avatarPath = tempAvatar;
+                          });
+                          try {
+                            context.read<HomeBloc>().add(LoadHomeDataEvent());
+                          } catch (_) {}
+                        }
+                        if (ctx.mounted) Navigator.pop(ctx);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 48.h,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF9D63FF), Color(0xFF6F3AE0)],
+                          ),
+                          borderRadius: BorderRadius.circular(24.r),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          l10n.add,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +238,148 @@ class SettingsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 32.h),
+            SizedBox(height: 24.h),
+
+            // Profile Card
+            _buildSectionTitle(l10n.profile),
+            SizedBox(height: 12.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.1),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 56.w,
+                    height: 56.w,
+                    padding: EdgeInsets.all(6.w),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF9D63FF).withValues(alpha: 0.2),
+                      border: Border.all(
+                        color: const Color(0xFF9D63FF),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Image.asset(_avatarPath),
+                  ),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _nickname,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          l10n.wordMateLearner,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.5),
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit_rounded, color: const Color(0xFF9D63FF), size: 22.sp),
+                    onPressed: _showEditProfileBottomSheet,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            // Daily Goal Section
+            _buildSectionTitle(l10n.todaysGoal),
+            SizedBox(height: 12.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.1),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        l10n.targetWordsPerDay,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF9D63FF).withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Text(
+                          '$_dailyGoal ${l10n.wordsPerDay}',
+                          style: TextStyle(
+                            color: const Color(0xFF9D63FF),
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 14.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [5, 10, 15, 20, 25].map((g) {
+                      final isSelected = g == _dailyGoal;
+                      return GestureDetector(
+                        onTap: () => _updateGoal(g),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF9D63FF)
+                                : Colors.white.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(14.r),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF9D63FF)
+                                  : Colors.white.withValues(alpha: 0.12),
+                            ),
+                          ),
+                          child: Text(
+                            '$g',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 24.h),
 
             // Language Section
             _buildSectionTitle(l10n.appLanguage),
@@ -78,7 +425,7 @@ class SettingsScreen extends StatelessWidget {
               },
             ),
 
-            SizedBox(height: 40.h),
+            SizedBox(height: 120.h),
           ],
         ),
       ),
@@ -159,13 +506,11 @@ class _LanguageOption extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Flag
             Text(
               flag,
               style: TextStyle(fontSize: 28.sp),
             ),
             SizedBox(width: 16.w),
-            // Language name & subtitle
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +534,6 @@ class _LanguageOption extends StatelessWidget {
                 ],
               ),
             ),
-            // Selected indicator
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               width: 24.w,

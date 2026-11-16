@@ -431,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @meaningHint.
   ///
   /// In en, this message translates to:
-  /// **'Vietnamese meaning...'**
+  /// **'Enter meaning...'**
   String get meaningHint;
 
   /// No description provided for @wordAdded.
@@ -607,6 +607,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Word deleted successfully'**
   String get wordDeleted;
+
+  /// No description provided for @otherTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get otherTopic;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @wordMateLearner.
+  ///
+  /// In en, this message translates to:
+  /// **'Word Mate Learner'**
+  String get wordMateLearner;
+
+  /// No description provided for @targetWordsPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Target words/day'**
+  String get targetWordsPerDay;
+
+  /// No description provided for @noExample.
+  ///
+  /// In en, this message translates to:
+  /// **'No example'**
+  String get noExample;
+
+  /// No description provided for @weeklyActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Activity'**
+  String get weeklyActivity;
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews'**
+  String reviewsCount(int count);
+
+  /// No description provided for @accuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get accuracy;
+
+  /// No description provided for @dueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due Today'**
+  String get dueToday;
+
+  /// No description provided for @daysInARow.
+  ///
+  /// In en, this message translates to:
+  /// **'days in a row'**
+  String get daysInARow;
+
+  /// No description provided for @totalVocabulary.
+  ///
+  /// In en, this message translates to:
+  /// **'total vocabulary'**
+  String get totalVocabulary;
+
+  /// No description provided for @retentionSolid.
+  ///
+  /// In en, this message translates to:
+  /// **'retention solid'**
+  String get retentionSolid;
+
+  /// No description provided for @inProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'in progress'**
+  String get inProgress;
+
+  /// No description provided for @typeNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Noun'**
+  String get typeNoun;
+
+  /// No description provided for @typeVerb.
+  ///
+  /// In en, this message translates to:
+  /// **'Verb'**
+  String get typeVerb;
+
+  /// No description provided for @typeAdj.
+  ///
+  /// In en, this message translates to:
+  /// **'Adj'**
+  String get typeAdj;
+
+  /// No description provided for @typeAdv.
+  ///
+  /// In en, this message translates to:
+  /// **'Adv'**
+  String get typeAdv;
+
+  /// No description provided for @typeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get typeOther;
 }
 
 class _AppLocalizationsDelegate
